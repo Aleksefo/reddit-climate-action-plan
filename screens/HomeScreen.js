@@ -4,30 +4,49 @@ import * as WebBrowser from "expo-web-browser";
 import React, { useState, useEffect } from "react";
 import {
   Image,
-  Platform,
+  Animated,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   ActivityIndicator,
   FlatList,
+  Dimensions,
 } from "react-native";
 import Config from "../constants/Config";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
+
+const HEADER_EXPANDED_HEIGHT = 100;
+const HEADER_COLLAPSED_HEIGHT = 0;
 
 export default function HomeScreen() {
   const [isLoading, setLoading] = useState(true);
   const [sort, setSort] = useState("hot");
   const [data, setData] = useState([]);
+  const [scrollY] = useState(new Animated.Value(0));
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${Config.redditURL}${Config.subRedditName}${sort}.json?sort=new`)
+    fetch(
+      `${Config.redditURL}${Config.subRedditName}${sort}.json?sort=new&t=month`
+    )
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, [sort]);
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
+    outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
+    extrapolate: "clamp",
+  });
+  const heroTitleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_EXPANDED_HEIGHT - 75],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
   return (
     <View style={styles.container}>
@@ -38,65 +57,136 @@ export default function HomeScreen() {
           color={Colors.primary}
         />
       ) : (
-        <FlatList
-          data={data.data.children}
-          keyExtractor={({ data }) => data.id}
-          style={styles.flatListContainer}
-          contentContainerStyle={styles.flatListBottom}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              key={item.data.id}
-              onPress={() => handleLinkPress(item.data.permalink)}
-              style={styles.postContainer}
+        <View>
+          <View
+            style={{
+              paddingTop: 48,
+              paddingBottom: 24,
+              shadowColor: Colors.black,
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.23,
+              shadowRadius: 2.62,
+              elevation: 4,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 24,
+                textAlign: "center",
+              }}
             >
-              <View style={styles.titleContainer}>
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                  <Text
-                    style={styles.titleText}
-                    numberOfLines={3}
-                    ellipsizeMode="tail"
-                  >
-                    {item.data.link_flair_text && (
+              Climate Action Plan
+            </Text>
+          </View>
+          <Animated.View
+            style={{
+              height: headerHeight,
+              width: SCREEN_WIDTH,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <Animated.Text
+              style={{
+                bottom: 0,
+                opacity: heroTitleOpacity,
+                fontSize: 20,
+                color: Colors.gray500,
+              }}
+            >
+              r/ClimateActionPlan
+            </Animated.Text>
+          </Animated.View>
+          <View
+            style={{
+              height: 1,
+              shadowColor: Colors.black,
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 2.62,
+              backgroundColor: Colors.gray200,
+              elevation: 4,
+            }}
+          />
+          <FlatList
+            data={data.data.children}
+            keyExtractor={({ data }) => data.id}
+            style={styles.flatListContainer}
+            contentContainerStyle={styles.flatListBottom}
+            onScroll={Animated.event([
+              {
+                nativeEvent: {
+                  contentOffset: {
+                    y: scrollY,
+                  },
+                },
+              },
+            ])}
+            scrollEventThrottle={16}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                key={item.data.id}
+                onPress={() => handleLinkPress(item.data.permalink)}
+                style={styles.postContainer}
+              >
+                <View style={styles.titleContainer}>
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <Text
+                      style={styles.titleText}
+                      numberOfLines={3}
+                      ellipsizeMode="tail"
+                    >
+                      {item.data.link_flair_text && (
+                        <Text style={styles.flairText}>
+                          {` ${item.data.link_flair_text} `}
+                        </Text>
+                      )}
+                      {item.data.title}
+                    </Text>
+                  </View>
+
+                  <Image
+                    source={{ uri: item.data.thumbnail }}
+                    style={styles.imageStyle}
+                  />
+                </View>
+                <View style={styles.infoContainer}>
+                  <View style={styles.infoTextContainer}>
+                    <Text style={styles.infoText}>By {item.data.author}</Text>
+                    {item.data.author_flair_text && (
                       <Text style={styles.flairText}>
-                        {` ${item.data.link_flair_text} `}
+                        {item.data.author_flair_text}
                       </Text>
                     )}
-                    {item.data.title}
-                  </Text>
+                  </View>
+                  <FontAwesome
+                    name="comment"
+                    size={16}
+                    color={Colors.primary}
+                    style={styles.iconStyle}
+                  />
+                  <Text style={styles.infoText}>{item.data.ups}</Text>
+                  <AntDesign
+                    name="like1"
+                    size={17}
+                    color={Colors.primary}
+                    style={styles.iconStyle}
+                  />
+                  <Text style={styles.infoText}>{item.data.num_comments}</Text>
                 </View>
-
-                <Image
-                  source={{ uri: item.data.thumbnail }}
-                  style={styles.imageStyle}
-                />
-              </View>
-              <View style={styles.infoContainer}>
-                <View style={styles.infoTextContainer}>
-                  <Text style={styles.infoText}>By {item.data.author}</Text>
-                  {item.data.author_flair_text && (
-                    <Text style={styles.flairText}>
-                      {item.data.author_flair_text}
-                    </Text>
-                  )}
-                </View>
-                <FontAwesome
-                  name="comment"
-                  size={16}
-                  color={Colors.primary}
-                  style={styles.iconStyle}
-                />
-                <Text style={styles.infoText}>{item.data.ups}</Text>
-                <AntDesign
-                  name="like1"
-                  size={17}
-                  color={Colors.primary}
-                  style={styles.iconStyle}
-                />
-                <Text style={styles.infoText}>{item.data.num_comments}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+              </TouchableOpacity>
+            )}
+          />
+        </View>
       )}
       <View style={styles.sortingContainer}>
         <SortButton
