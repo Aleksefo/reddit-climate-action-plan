@@ -50,73 +50,73 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator
-          size="large"
-          style={styles.loading}
-          color={Colors.primary}
+      <View>
+        <View
+          style={{
+            paddingTop: 48,
+            paddingBottom: 24,
+            shadowColor: Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.23,
+            shadowRadius: 2.62,
+            elevation: 4,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              textAlign: "center",
+            }}
+          >
+            Climate Action Plan
+          </Text>
+        </View>
+        <Animated.View
+          style={{
+            height: headerHeight,
+            width: SCREEN_WIDTH,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <Animated.Text
+            style={{
+              bottom: 0,
+              opacity: heroTitleOpacity,
+              fontSize: 20,
+              color: Colors.gray500,
+            }}
+          >
+            r/ClimateActionPlan
+          </Animated.Text>
+        </Animated.View>
+        <View
+          style={{
+            height: 1,
+            shadowColor: Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 2.62,
+            backgroundColor: Colors.gray200,
+            elevation: 4,
+          }}
         />
-      ) : (
-        <View>
-          <View
-            style={{
-              paddingTop: 48,
-              paddingBottom: 24,
-              shadowColor: Colors.black,
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.23,
-              shadowRadius: 2.62,
-              elevation: 4,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 24,
-                textAlign: "center",
-              }}
-            >
-              Climate Action Plan
-            </Text>
-          </View>
-          <Animated.View
-            style={{
-              height: headerHeight,
-              width: SCREEN_WIDTH,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
-            <Animated.Text
-              style={{
-                bottom: 0,
-                opacity: heroTitleOpacity,
-                fontSize: 20,
-                color: Colors.gray500,
-              }}
-            >
-              r/ClimateActionPlan
-            </Animated.Text>
-          </Animated.View>
-          <View
-            style={{
-              height: 1,
-              shadowColor: Colors.black,
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.3,
-              shadowRadius: 2.62,
-              backgroundColor: Colors.gray200,
-              elevation: 4,
-            }}
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            style={styles.loading}
+            color={Colors.primary}
           />
+        ) : (
           <FlatList
             data={data.data.children}
             keyExtractor={({ data }) => data.id}
@@ -186,8 +186,8 @@ export default function HomeScreen() {
               </TouchableOpacity>
             )}
           />
-        </View>
-      )}
+        )}
+      </View>
       <View style={styles.sortingContainer}>
         <SortButton
           name={"md-bonfire"}
@@ -214,7 +214,7 @@ function handleLinkPress(link) {
 }
 
 const styles = StyleSheet.create({
-  loading: { flex: 1 },
+  loading: { height: "80%" },
   container: {
     flex: 1,
     backgroundColor: Colors.background,
