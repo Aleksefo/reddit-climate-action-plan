@@ -11,7 +11,7 @@ import {
   FlatList,
 } from "react-native";
 import Config from "../constants/Config";
-import { FontAwesome5, AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const [isLoading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function HomeScreen() {
       ) : (
         <FlatList
           data={data.data.children}
-          style={{ margin: 4 }}
+          style={{ margin: 8 }}
           keyExtractor={({ data }) => data.id}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -46,6 +46,15 @@ export default function HomeScreen() {
                 margin: 4,
                 padding: 4,
                 height: 96,
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.23,
+                shadowRadius: 2.62,
+
+                elevation: 4,
               }}
             >
               <View
@@ -81,7 +90,13 @@ export default function HomeScreen() {
                   justifyContent: "space-between",
                 }}
               >
-                <View style={{ flex: 1, flexDirection: "row" }}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
                   <Text style={styles.infoText}>By {item.data.author}</Text>
                   {item.data.author_flair_text && (
                     <Text style={styles.flairText}>
@@ -89,25 +104,21 @@ export default function HomeScreen() {
                     </Text>
                   )}
                 </View>
-                <FontAwesome5
-                  name="hotjar"
-                  size={14}
+                <FontAwesome
+                  name="comment"
+                  size={16}
                   color="green"
                   style={{ marginHorizontal: 4 }}
                 />
                 <Text style={styles.infoText}>{item.data.ups}</Text>
                 <AntDesign
                   name="like1"
-                  size={14}
+                  size={17}
                   color="green"
                   style={{ marginHorizontal: 4 }}
                 />
                 <Text style={styles.infoText}>{item.data.num_comments}</Text>
               </View>
-              {/*<Text>{item.data.created}</Text>*/}
-              {/*<Text>{item.data.created}</Text>*/}
-              {/*<Text>{item.data.permalink}</Text>*/}
-              {/*<Text style={styles.codeHighlightText}>{item.data.link_flair_text}</Text>*/}
             </TouchableOpacity>
           )}
         />
@@ -159,7 +170,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flairText: {
-    backgroundColor: "#d2d2d2",
+    backgroundColor: "#e3e3e3",
+    color: "#838688",
     marginLeft: 4,
     paddingHorizontal: 2,
     fontSize: 14,
