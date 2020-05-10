@@ -1,3 +1,5 @@
+import Colors from "../constants/Colors";
+import SortButton from "../components/SortButton";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState, useEffect } from "react";
 import {
@@ -15,25 +17,32 @@ import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const [isLoading, setLoading] = useState(true);
+  const [sort, setSort] = useState("hot");
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch(`${Config.redditURL}${Config.subRedditName}new.json?sort=new`)
+    setLoading(true);
+    fetch(`${Config.redditURL}${Config.subRedditName}${sort}.json?sort=new`)
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [sort]);
 
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <ActivityIndicator size="large" />
+        <ActivityIndicator
+          size="large"
+          style={styles.loading}
+          color={Colors.primary}
+        />
       ) : (
         <FlatList
           data={data.data.children}
           keyExtractor={({ data }) => data.id}
           style={styles.flatListContainer}
+          contentContainerStyle={styles.flatListBottom}
           renderItem={({ item }) => (
             <TouchableOpacity
               key={item.data.id}
@@ -73,14 +82,14 @@ export default function HomeScreen() {
                 <FontAwesome
                   name="comment"
                   size={16}
-                  color="green"
+                  color={Colors.primary}
                   style={styles.iconStyle}
                 />
                 <Text style={styles.infoText}>{item.data.ups}</Text>
                 <AntDesign
                   name="like1"
                   size={17}
-                  color="green"
+                  color={Colors.primary}
                   style={styles.iconStyle}
                 />
                 <Text style={styles.infoText}>{item.data.num_comments}</Text>
@@ -89,37 +98,52 @@ export default function HomeScreen() {
           )}
         />
       )}
-      <View style={styles.tabBarInfoContainer} />
+      <View style={styles.sortingContainer}>
+        <SortButton
+          name={"md-bonfire"}
+          title={"Hot"}
+          onPress={() => setSort("hot")}
+        />
+        <SortButton
+          name={"md-egg"}
+          title={"New"}
+          onPress={() => setSort("new")}
+        />
+        <SortButton
+          name={"md-arrow-up"}
+          title={"Top"}
+          onPress={() => setSort("top")}
+        />
+      </View>
     </View>
   );
 }
-
-HomeScreen.navigationOptions = {
-  header: null,
-};
 
 function handleLinkPress(link) {
   WebBrowser.openBrowserAsync(Config.redditURL + link);
 }
 
 const styles = StyleSheet.create({
+  loading: { flex: 1 },
   container: {
     flex: 1,
-    backgroundColor: "#e1f5e1",
+    backgroundColor: Colors.background,
   },
   flatListContainer: {
     padding: 8,
-    marginBottom: 0,
+  },
+  flatListBottom: {
+    paddingBottom: 32,
   },
   postContainer: {
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: "#c5c5c5",
-    backgroundColor: "#f5f5f5",
+    borderColor: Colors.gray200,
+    backgroundColor: Colors.white,
     margin: 4,
     padding: 4,
     height: 96,
-    shadowColor: "#000",
+    shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -128,23 +152,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
 
     elevation: 4,
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        padding: 1,
-      },
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
   },
   titleContainer: {
     flexDirection: "row",
@@ -168,11 +175,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   flairText: {
-    backgroundColor: "#e3e3e3",
-    color: "#838688",
+    backgroundColor: Colors.gray100,
+    color: Colors.gray500,
     marginLeft: 4,
     paddingHorizontal: 2,
     fontSize: 14,
   },
   iconStyle: { marginHorizontal: 4 },
+  sortingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    position: "absolute",
+    width: "100%",
+    bottom: 32,
+  },
 });
