@@ -19,11 +19,18 @@ The project is quite simple, so I opted to use Expo for simple prototyping and f
 If it was a real app, I would use plain React Native with TypeScript, Redux, React Navigation etc.
 
 In addition to minimum requirements, I added:
+
 -sorting based on Hot,New,Top
+
 -small header animation when user scrolls the list
+
 -splash screen and app icons
 
+
 If I had more time I would:
+
 -add testing
+
 -add more animations
+
 -add authentication with OAuth
