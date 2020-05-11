@@ -51,28 +51,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View>
-        <View
-          style={{
-            paddingTop: 48,
-            paddingBottom: 24,
-            shadowColor: Colors.black,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.23,
-            shadowRadius: 2.62,
-            elevation: 4,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 24,
-              textAlign: "center",
-            }}
-          >
-            Climate Action Plan
-          </Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Climate Action Plan</Text>
         </View>
         <Animated.View
           style={{
@@ -96,20 +76,7 @@ export default function HomeScreen() {
             r/ClimateActionPlan
           </Animated.Text>
         </Animated.View>
-        <View
-          style={{
-            height: 1,
-            shadowColor: Colors.black,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.3,
-            shadowRadius: 2.62,
-            backgroundColor: Colors.gray200,
-            elevation: 4,
-          }}
-        />
+        <View style={styles.headerShadow} />
         {isLoading ? (
           <ActivityIndicator
             size="large"
@@ -218,6 +185,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  headerStyle: {
+    paddingTop: 48,
+    paddingBottom: 24,
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  headerTitle: {
+    fontSize: 24,
+    textAlign: "center",
+  },
+  headerShadow: {
+    height: 1,
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2.62,
+    backgroundColor: Colors.gray200,
+    elevation: 4,
   },
   flatListContainer: {
     padding: 8,
