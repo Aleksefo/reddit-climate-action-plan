@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   flatListBottom: {
-    paddingBottom: 32,
+    paddingBottom: 256,
   },
   postContainer: {
     borderWidth: 1,
